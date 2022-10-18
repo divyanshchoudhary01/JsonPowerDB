@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<title>HR Application</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+<script>
+function cancelAddition()
+{
+document.getElementById('cancelAddition').submit();
+}
+function createREMOVERecordRequest(connToken, record, dbName, relName) 
+{
+var putRequest = "{\n"
++ "\"token\" : \""
++ connToken
++ "\","+ "\"dbName\": \""
++ dbName
++ "\",\n" + "\"cmd\" : \"REMOVE\",\n"
++ "\"rel\" : \""
++ relName + "\","
++ "\"record\": \n"
++ record
++ "\n"
++ "}";
+return putRequest;
+}
+
+function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) 
+{
+var url = dbBaseUrl + apiEndPointUrl;
+var jsonObj;
+$.post(url, reqString, function (result) {
+jsonObj = JSON.parse(result);
+}).fail(function (result) {
+var dataJsonObj = result.responseText;
+jsonObj = JSON.parse(dataJsonObj);
+});
+return jsonObj;
+}
+function EmployeeDeleteForm()
+{
+var token = "90937685|-31949296904835759|90942316";
+var dbname = "Employee";
+var relationName = "Employee-data";
+var roll = parseInt(document.getElementById("record").value);
+if(roll<=0)
+{
+alert("INVALID VALUE");
+return;
+}
+var reqString = createREMOVERecordRequest(token,roll, dbname, relationName);
+alert(reqString);
+jQuery.ajaxSetup({async: false});
+var resultObj = executeCommand(reqString,"http://api.login2explore.com:5577", "/api/iml");
+jQuery.ajaxSetup({async: true});
+alert(JSON.stringify(resultObj));
+}
+</script>
+</head>
+<body>
+<!--Main Container starts here-->
+<div style='width:90hw;height:auto;border:1px solid black'>
+<!--header section starts here-->
+<div style='width:90hw;height:auto;margin:5px;border:1px solid black'>
+<div style='width:90hw;height:auto;margin:5px;font-size:20pt'>Thinking Machines
+</div>
+</div>
+<!--header section ends here-->
+<!-- Content Section starts here-->
+<div style='width:90hw;height:63vh;margin:5px;border:1px solid black'>
+<!--left panel starts here-->
+<div style='height:60vh;margin:5px;float:left;padding:5px;border:1px solid black'>
+<a href='/JsonPower/index.html'>Employee</a><br>
+</div>
+<!--left panel ends here-->
+<!--Right panel starts here-->
+<div style='height:60vh;margin-left:105px;margin-right:5px;margin-top:5px;margin-bottom:5px;padding:5px;border:1px solid black'>
+<h2>Delete Employee Module</h2>
+<div id='data'></div><br>
+<b>Do you want to delete this employee data?</b><br>
+<form>
+Enter record number <input type=number id='record'>
+<button type='button' onclick='EmployeeDeleteForm()'>Yes</button>
+</form>
+<form id='cancelAddition' action='/JsonPower/index.html'>
+<button type='button' onclick='cancelAddition()'>No</button>
+</form>
+</div>
+<!--Right panel ends here-->
+</div>
+<!--Content Section ends here-->
+<!--footer section starts here-->
+<div style='width:90hw;height:auto;margin:5px;text-align:center;border:1px solid black'>&copy;Thinking Machines
+</div>
+<!--footer section ends here-->
+</div>
+<!--Main Container ends here-->
+</body>
+</html>

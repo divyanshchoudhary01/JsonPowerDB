@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<title>HR Application</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+<script>
+function cancelAddition()
+{
+document.getElementById('cancelAddition').submit();
+}
+function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+var url = dbBaseUrl + apiEndPointUrl;
+var jsonObj;
+$.post(url, reqString, function (result) {
+jsonObj = JSON.parse(result);
+}).fail(function (result) {
+var dataJsonObj = result.responseText;
+jsonObj = JSON.parse(dataJsonObj);
+});
+return jsonObj;
+}
+function EmployeeEditForm()
+{
+var record=document.getElementById("record").value;
+var name=document.getElementById("name").value;
+var nameErrorSection=document.getElementById('nameErrorSection');
+var gender=document.getElementById('gender').value.trim();
+var genderErrorSection=document.getElementById('genderErrorSection');
+var basicSalary=document.getElementById('basicSalary').value;
+var basicSalaryErrorSection=document.getElementById('basicSalaryErrorSection');
+var panCardNumber=document.getElementById('panCardNumber').value;
+var panCardNumberErrorSection=document.getElementById('panCardNumberErrorSection');
+var aadharCardNumber=document.getElementById('aadharCardNumber').value;
+var aadharCardNumberErrorSection=document.getElementById('aadharCardNumberErrorSection');
+if(name.length==0 || basicSalary.length==0 || gender==-1 || panCardNumber.length==0 || aadharCardNumber.length==0 )
+{
+nameErrorSection.innerHTML="";
+if(name.length==0) nameErrorSection.innerHTML="Name section is empty";
+genderErrorSection.innerHTML="";
+if(gender==-1) genderErrorSection.innerHTML="Select gender";
+basicSalaryErrorSection.innerHTML="";
+if(basicSalary.length==0) basicSalaryErrorSection.innerHTML="Enter Basic Salary";
+panCardNumberErrorSection.innerHTML="";
+if(panCardNumber.length==0) panCardNumberErrorSection.innerHTML="Enter Pan Card Number";
+aadharCardNumberErrorSection.innerHTML="";
+if(aadharCardNumber.length==0) aadharCardNumberErrorSection.innerHTML="Enter Aadhar Card Number";
+return;
+}
+var token = "90937685|-31949296904835759|90942316";
+var dbname = "Employee";
+var relationName = "Employee-data";
+var gender2="male"
+if(gender==1)
+{
+gender2="male"
+}
+else if(gender==2)
+{
+gender2="female"
+}
+var jsonStrObj = 
+{
+EmloyeeName: name,
+BasicSalary: basicSalary,
+gender: gender2,
+panCardNumber:panCardNumber,
+aadharCardNumber:aadharCardNumber
+};
+var reqString = createUPDATERecordRequest(token, JSON.stringify(jsonStrObj), dbname, relationName,record);
+alert(reqString);
+jQuery.ajaxSetup({async: false});
+var resultObj = executeCommand(reqString,"http://api.login2explore.com:5577", "/api/iml");
+jQuery.ajaxSetup({async: true});
+alert(JSON.stringify(resultObj));
+}
+</script>
+</head>
+<body>
+<!--Main Container starts here-->
+<div style='width:90hw;height:auto;border:1px solid black'>
+<!--header section starts here-->
+<div style='width:90hw;height:auto;margin:5px;border:1px solid black'>
+<div style='width:90hw;height:auto;margin:5px;font-size:20pt'>Thinking Machines
+</div>
+</div>
+<!--header section ends here-->
+<!-- Content Section starts here-->
+<div style='width:90hw;height:63vh;margin:5px;border:1px solid black'>
+<!--left panel starts here-->
+<div style='height:60vh;margin:5px;float:left;padding:5px;border:1px solid black'>
+<a href='/JsonPower/index.html'>Home</a><br>
+</div>
+<!--left panel ends here-->
+<!--Right panel starts here-->
+<div style='height:60vh;margin-left:105px;margin-right:5px;margin-top:5px;margin-bottom:5px;padding:5px;border:1px solid black'>
+<h2>Edit Employee Module</h2>
+<table>
+<tr>
+<td>Enter record number</td>
+<td><input type=number id='record' name='record' maxLength='50' size='51'>
+</tr>
+<tr>
+<td>Name</td>
+<td><input type='text' id='name' name='id' maxLength='50' size='51'>
+<span id='nameErrorSection' style='color:red'></span></td>
+</tr>
+<tr>
+<td>Gender</td>
+<td>
+<select id='gender'><option value='-1'>&lt;Select gender&gt;</option>
+<option value='1'>Male</option>
+<option value='2'>female</option>
+</select>
+<span id='genderErrorSection' style='color:red'></span>
+</td>
+</tr>
+<tr>
+<td>Basic Salary</td>
+<td><input type='text' name='basicSalary' id='basicSalary'>
+<span id='basicSalaryErrorSection' style='color:red'></span>
+</td>
+</tr>
+<tr>
+<td>PanCard Number</td>
+<td><input type='text' name='panCardNumber' id='panCardNumber'>
+<span id='panCardNumberErrorSection' style='color:red'></span>
+</td>
+</tr>
+<tr>
+<td>AadharCard Number</td>
+<td><input type='text' name='aadharCardNumber' id='aadharCardNumber'>
+<span id='aadharCardNumberErrorSection' style='color:red'></span>
+</td>
+</tr>
+</table>                       
+<button type='button' onclick='EmployeeEditForm()'>Save</button>
+<form id='cancelAddition' action='/JsonPower/index.html'>
+<button type='button' onclick='cancelAddition()'>Cancel</button>
+</form>
+</div>
+<!--Right panel ends here-->
+</div>
+<!--Content Section ends here-->
+<!--footer section starts here-->
+<div style='width:90hw;height:auto;margin:5px;text-align:center;border:1px solid black'>&copy;Thinking Machines
+</div>
+<!--footer section ends here-->
+</div>
+<!--Main Container ends here-->
+</body>
+</html>
